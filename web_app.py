@@ -1,7 +1,9 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 from database import ejecutar_consulta
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/')
 def inicio():
@@ -42,7 +44,6 @@ def obtener_alumno(id_alumno):
 @app.route('/alumnos/<int:id_alumno>', methods=['PUT'])
 def modificar_alumno(id_alumno):
     """Busca un alumno por ID y actualiza sus datos con el JSON recibido."""
-    #Verificar si el id_alumno existe 
     sql_check = "SELECT COUNT(*) FROM alumnos WHERE id = ?"
     resultado_check = ejecutar_consulta(sql_check, (id_alumno,))[0]['COUNT(*)']
 
