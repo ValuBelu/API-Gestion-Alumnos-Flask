@@ -1,0 +1,9 @@
+# Python
+__pycache__/
+*.pyc
+
+# Entorno Virtual
+venv/
+
+# Bases de Datos
+*.db
