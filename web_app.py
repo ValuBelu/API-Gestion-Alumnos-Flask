@@ -25,14 +25,14 @@ def alumnos():
         
         nota = datos.get('nota', 0.0)        
         parametros = (datos['nombre'], datos['materia'], nota)
-        sql_insert = "INSERT INTO alumnos (nombre, materia, nota) VALUES (?, ?, ?)"
+        sql_insert = "INSERT INTO alumnos (nombre, materia, nota) VALUES (%s, %s, %s)"
         ejecutar_consulta(sql_insert, parametros)
         return jsonify({"mensaje": "Alumno creado con éxito"}), 201
     
 @app.route('/alumnos/<int:id_alumno>', methods=['GET'])
 def obtener_alumno(id_alumno):
     """Busca un alumno por su ID."""
-    sql_select = "SELECT id, nombre, materia, nota FROM alumnos WHERE id = ?"
+    sql_select = "SELECT id, nombre, materia, nota FROM alumnos WHERE id = %s"
     alumno_data = ejecutar_consulta(sql_select, (id_alumno,))
 
     if not alumno_data:
@@ -44,8 +44,8 @@ def obtener_alumno(id_alumno):
 @app.route('/alumnos/<int:id_alumno>', methods=['PUT'])
 def modificar_alumno(id_alumno):
     """Busca un alumno por ID y actualiza sus datos con el JSON recibido."""
-    sql_check = "SELECT COUNT(*) FROM alumnos WHERE id = ?"
-    resultado_check = ejecutar_consulta(sql_check, (id_alumno,))[0]['COUNT(*)']
+    sql_check = "SELECT COUNT(*) FROM alumnos WHERE id = %s"
+    resultado_check = ejecutar_consulta(sql_check, (id_alumno,))[0]['count']
 
     if resultado_check == 0:
         return jsonify({"error": f"Alumno con ID {id_alumno} no encontrado para actualizar."}), 404
@@ -58,16 +58,16 @@ def modificar_alumno(id_alumno):
     valores = []
 
     if 'nombre' in datos:
-        campos.append("nombre = ?")
+        campos.append("nombre = %s")
         valores.append(datos['nombre'])
     if 'materia' in datos:
-        campos.append("materia = ?")
+        campos.append("materia = %s")
         valores.append(datos['materia'])
     if 'nota' in datos:
-        campos.append("nota = ?")
+        campos.append("nota = %s")
         valores.append(datos['nota'])
 
-    sql_update = f"UPDATE alumnos SET {', '.join(campos)} WHERE id = ?"
+    sql_update = f"UPDATE alumnos SET {', '.join(campos)} WHERE id = %s"
     valores.append(id_alumno)
     ejecutar_consulta(sql_update, tuple(valores))
 
@@ -76,13 +76,13 @@ def modificar_alumno(id_alumno):
 @app.route('/alumnos/<int:id_alumno>', methods=['DELETE'])
 def eliminar_alumno(id_alumno):
     """Elimina el registro del alumno según su ID."""
-    sql_check = "SELECT COUNT(*) FROM alumnos WHERE id = ?"
-    resultado_check = ejecutar_consulta(sql_check, (id_alumno,))[0]['COUNT(*)']
+    sql_check = "SELECT COUNT(*) FROM alumnos WHERE id = %s"
+    resultado_check = ejecutar_consulta(sql_check, (id_alumno,))[0]['count']
 
     if resultado_check == 0:
         return jsonify({"error": f"Alumno con ID {id_alumno} no encontrado para eliminar."}), 404
         
-    sql_delete = "DELETE FROM alumnos WHERE id = ?"
+    sql_delete = "DELETE FROM alumnos WHERE id = %s"
     ejecutar_consulta(sql_delete, (id_alumno,)) 
     return jsonify({"mensaje": f"Alumno con ID {id_alumno} eliminado con éxito"}), 204
 

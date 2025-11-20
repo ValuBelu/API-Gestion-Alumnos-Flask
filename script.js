@@ -91,11 +91,11 @@ async function cargarAlumnos() {
             `;
             tablaBody.appendChild(fila);
         });
-        setupListeners(); 
-
+        
     } catch (error) {
         console.error("Error al cargar los datos de la API:", error);
         tablaBody.innerHTML = '<tr><td colspan="5">Error al conectar con la API. Asegúrese de que el servidor Flask esté corriendo.</td></tr>';
     }
 }
+setupListeners();
 cargarAlumnos();
